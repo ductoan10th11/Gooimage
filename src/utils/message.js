@@ -16,5 +16,6 @@ exports.msg = {
     },
     accountdoesnotexist: {
         message: "account does not exist"
-    }
+    },
+
 }

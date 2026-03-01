@@ -1,6 +1,9 @@
 const User = require('../modules/users/user.model')
 const Tracking = require('../modules/Logs/tracking')
 const MSG = require('../utils/message')
+const jwtUtil = require('../utils/jwt')
+const { google } = require('googleapis')
+const Role = require('../modules/roles/role.service')
 
 exports.verify = async (req, res, next) => {
     try{
@@ -16,12 +19,20 @@ exports.verify = async (req, res, next) => {
 
         const payload = ticket.getPayload();
         const user = await verityUser(req, payload)
+        const jwt_payload = {
+            email: user.email,
+            name: user.name,
+            googleId: user.googleId
+        }
+        const authToken = jwtUtil.sign(jwt_payload)
+
         req.user = user
-        res.cookie("token", token, {
+        res.clearCookie("token");
+        res.cookie("token", authToken, {
             httpOnly: true,
             // secure: true,
             sameSite: "lax",
-            maxAge: 1 * 60 * 60 * 1000
+            maxAge: 7 * 24 * 60 * 60 * 1000
         })
         
         next()
@@ -57,6 +68,8 @@ const verityUser = async(req, payload) => {
 const register = async(googleId,email,name,provider,avatar) => {
     try{
         const newUser = await User.create({ email, name, provider, googleId, avatar})
+        const userId = newUser._id
+        await Role.addRole(userId)
         return newUser !== true
     }catch (err){
         throw err
@@ -66,21 +79,13 @@ const register = async(googleId,email,name,provider,avatar) => {
 exports.refresh = async(req, res, next) => {
     try{
         const token = req.cookies.token;
-
-        if (!token) {
-            return res.status(401).json({ message: "Unauthorized" });
+        if(!token){
+            res.clearCookie("token")
+            return res.json(MSG.msg.unauthorized)
         }
-        const { OAuth2Client } = require("google-auth-library");
+        const tUser = jwtUtil.decode(token) 
 
-        const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-
-        const payload = ticket.getPayload();
-        const googleId = payload.sub
+        const googleId = tUser.googleId
         let user = await User.findOne({googleId})
         if(!user){
             return res.json(MSG.msg.accountdoesnotexist)
@@ -91,4 +96,42 @@ exports.refresh = async(req, res, next) => {
         res.json(MSG.msg.error)
         throw err
     }
+}
+
+exports.getPage = async(req, res, next) => {
+    try{ 
+        const path = req.route.path.replace("/", "").toUpperCase()
+        const token = req.cookies.token;
+        if(!token){
+            res.clearCookie("token")
+            return res.json(MSG.msg.unauthorized)
+        }
+        const tUser = jwtUtil.decode(token) 
+
+        const googleId = tUser.googleId
+        let user = await User.findOne({googleId})
+        if(!user){
+            return res.json(MSG.msg.accountdoesnotexist)
+        }
+        const author = await authorizationPage(user._id, path)
+        if(!author){
+            return res.json({...MSG.msg.success, [path]: author})
+        }
+        req.user = user
+        next()
+    }catch (err){
+        res.json(MSG.msg.error)
+        console.log(err)
+    }
+}
+
+const authorizationPage = async(userId, path) => {
+    try{    
+        const reqPer = path
+        const isvalid = await Role.authPer(userId, reqPer)
+        return isvalid
+    }catch (err){
+        console.log(err)
+    }
+
 }

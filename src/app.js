@@ -18,11 +18,15 @@ app.use(cors({
 }))
 app.use(cookieParser())
 app.use(express.json())
-app.use(limiter);
+// app.use(limiter);
 
 const driveRouter = require('./modules/drive-api/drive.route')
 app.use('/drive', driveRouter)
 const userRouter = require('./modules/users/user.route')
 app.use('/user', userRouter)
+
+// testing / setup
+
+
 
 module.exports = app

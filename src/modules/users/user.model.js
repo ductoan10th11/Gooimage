@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    email: String,
+    email: {type: String, required: true, unique: true},
     name: String,
     provider: String,
-    googleId: String,
+    googleId: {type: String, required: true, unique: true},
     avatar: String,
     rank: {type: String, enum: ["member", "contributor", "shareholder"], default: "member"},
-    linklimit: {type: Number, default: 10}
+    linklimit: {type: Number, default: 5}
 }, {timestamps: true})
 
 // Thành viên
