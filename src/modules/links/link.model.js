@@ -5,7 +5,7 @@ const linkSchema = new mongoose.Schema({
     name: String,
     driveLink: {type: String},
     gooLink: {type: String, require: true, unique: true},
-    status: {type: String, enum: ["active", "stop"], default: "active"},
+    status: {type: String, enum: ["active", "inactive"], default: "active"},
     viewer: {type: Number, default: 0}
 }, {timestamps: true})
 

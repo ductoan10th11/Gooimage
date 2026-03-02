@@ -12,4 +12,9 @@ driveRouter.get('/api', Middleware.getPage, Controller.api)
 driveRouter.get('/support', Middleware.getPage, Controller.support)
 driveRouter.get('/upgrade', Middleware.getPage, Controller.upgrade)
 
+driveRouter.post('/link', Middleware.getPage, Controller.addLink)
+driveRouter.delete('/link', Middleware.getPage, Controller.deleteLink)
+driveRouter.put('/link', Middleware.getPage, Controller.updateLink)
+driveRouter.patch('/link', Middleware.getPage, Controller.toggleStatusLink)
+
 module.exports = driveRouter

@@ -14,6 +14,7 @@ const limiter = rateLimit({
 // app.set("trust proxy", true);
 app.use(cors({
   origin: "http://localhost:3618",
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true
 }))
 app.use(cookieParser())

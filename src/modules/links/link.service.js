@@ -17,7 +17,31 @@ exports.getLink = async(userId) => {
         throw err
     }
 }
-
+exports.deleteLink = async(userId, linkId) => {
+    try{
+        const links = await Link.findOneAndDelete({_id: linkId, userId})
+        return links !== null
+    }catch (err){
+        throw err
+    }
+}
+exports.updateLink = async(userId, linkId, driveLink, name) => {
+    try{
+        const links = await Link.findOneAndUpdate({_id: linkId, userId}, { name, driveLink })
+        return links !== null
+    }catch (err){
+        throw err
+    }
+}
+exports.toggleStatusLink = async(userId, linkId, status) => {
+    try{
+        // console.log(status)
+        const links = await Link.findOneAndUpdate({_id: linkId, userId}, { status })
+        return links !== null
+    }catch (err){
+        throw err
+    }
+}
 
 
 
