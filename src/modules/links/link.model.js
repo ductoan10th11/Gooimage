@@ -6,7 +6,8 @@ const linkSchema = new mongoose.Schema({
     driveLink: {type: String},
     gooLink: {type: String, require: true, unique: true},
     status: {type: String, enum: ["active", "inactive"], default: "active"},
-    viewer: {type: Number, default: 0}
+    viewer: {type: Number, default: 0},
+    selectLimit: {type: Number, default: 0}
 }, {timestamps: true})
 
 module.exports = mongoose.model("Link", linkSchema)

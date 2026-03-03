@@ -1,11 +1,12 @@
 const Link = require('./link.model')
 const crypto = require('crypto')
+const Selected = require('./selected.model')
 
-exports.addLink = async(userId, rawLink, name) => {
+exports.addLink = async(userId, rawLink, name, limit) => {
     try{
         const gooLink = randomId(20)
         const driveLink = rawLink.split("folders/")[1].split("?usp")[0]
-        const links = await Link.create({userId, name, driveLink, gooLink})
+        const links = await Link.create({userId, name, driveLink, gooLink, selectLimit: limit})
     }catch (err){
         throw err
     }
@@ -18,17 +19,20 @@ exports.getLink = async(userId) => {
         throw err
     }
 }
-exports.deleteLink = async(userId, linkId) => {
+exports.deleteLink = async(userId, linkIdr) => {
     try{
-        const links = await Link.findOneAndDelete({_id: linkId, userId})
+        const links = await Link.findOneAndDelete({_id: linkIdr, userId})
+        const linkId = links._id
+        await Selected.findOneAndDelete({linkId})
         return links !== null
     }catch (err){
         throw err
     }
 }
-exports.updateLink = async(userId, linkId, driveLink, name) => {
+exports.updateLink = async(userId, linkId, rawLink, name, limit) => {
     try{
-        const links = await Link.findOneAndUpdate({_id: linkId, userId}, { name, driveLink })
+        const driveLink = rawLink.split("folders/")[1].split("?usp")[0]
+        const links = await Link.findOneAndUpdate({_id: linkId, userId}, { name, driveLink, selectLimit: limit })
         return links !== null
     }catch (err){
         throw err
@@ -46,11 +50,37 @@ exports.toggleStatusLink = async(userId, linkId, status) => {
 exports.getGooLink = async(rawLink) => {
     try{
         const goolink = await Link.findOneAndUpdate({gooLink: rawLink, status: "active"}, { $inc: { viewer: 1 } }, { returnDocument: "after" })
-        return goolink.driveLink
+        const res = [goolink.name, goolink.driveLink, goolink.selectLimit]
+        return res
     }catch(err){
         throw err
     }
 }
+
+exports.writeSelectionImage = async(gooLink, selected) => {
+    try{
+        const goolink = await Link.findOne({gooLink})
+        const linkId = goolink._id
+        const isExist = await Selected.findOne({linkId})
+        if(isExist !== null) return null
+        const sel = await Selected.create({linkId, selected})
+        return sel !== null
+    }catch(err){
+        throw err
+    }
+}
+exports.getSelectedImage = async(gooLink, userId) => {
+    try{
+        const goolink = await Link.findOne({userId, gooLink})
+        const linkId = goolink._id
+        const isExist = await Selected.findOne({linkId})
+        if(isExist === null) return null
+        return [gooLink, isExist.selected]
+    }catch(err){
+        throw err
+    }
+}
+
 
 
 function randomId(length = 20) {

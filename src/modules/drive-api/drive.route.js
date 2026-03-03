@@ -18,5 +18,7 @@ driveRouter.put('/link', Middleware.getPage, Controller.updateLink)
 driveRouter.patch('/link', Middleware.getPage, Controller.toggleStatusLink)
 
 driveRouter.get("/:goolink", Controller.getList)
+driveRouter.post("/:goolink", Controller.selectedImage)
+driveRouter.get("/:goolink/selected", Middleware.refresh, Controller.getSelectedImage)
 
 module.exports = driveRouter
