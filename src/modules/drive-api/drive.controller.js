@@ -118,8 +118,11 @@ exports.toggleStatusLink = async(req, res) => {
 
 exports.getList = async(req, res) => {
     try{
-        const folId = req.params.id
+        const rawLink = req.params.goolink
+        const folId = await Link.getGooLink(rawLink)
+        // console.log(folId)
         const listImg = await Service.listImages(folId)
+        // console.log(listImg)
         await Tracking.writeLog(req, `Get list image with ${folId}`)
         return res.json({status: "success", listImg})
     }catch (err){

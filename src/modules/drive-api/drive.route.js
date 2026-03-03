@@ -17,4 +17,6 @@ driveRouter.delete('/link', Middleware.getPage, Controller.deleteLink)
 driveRouter.put('/link', Middleware.getPage, Controller.updateLink)
 driveRouter.patch('/link', Middleware.getPage, Controller.toggleStatusLink)
 
+driveRouter.get("/:goolink", Controller.getList)
+
 module.exports = driveRouter

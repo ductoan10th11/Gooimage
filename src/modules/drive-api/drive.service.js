@@ -5,15 +5,23 @@ const drive = google.drive({
   auth: process.env.GOOGLE_API_KEY
 });
 
-exports.listImages = async(folderId) => {
-  try {
+exports.listImages = async (folderId) => {
+  let allFiles = [];
+  let pageToken = null;
+
+  do {
     const res = await drive.files.list({
       q: `'${folderId}' in parents and mimeType contains 'image/' and trashed=false`,
-      fields: "files(id, name, mimeType)"
+      fields: "nextPageToken, files(id, name, mimeType)",
+      pageSize: 1000,
+      pageToken
     });
 
-    return res.data.files || null
-  } catch (err) {
-    throw err
-  }
-}
+    allFiles = allFiles.concat(res.data.files || []);
+    pageToken = res.data.nextPageToken;
+
+  } while (pageToken);
+
+  return allFiles;
+};
+// https://drive.google.com/file/d/${fileId}/view

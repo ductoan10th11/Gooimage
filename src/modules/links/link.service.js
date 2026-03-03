@@ -1,9 +1,10 @@
 const Link = require('./link.model')
 const crypto = require('crypto')
 
-exports.addLink = async(userId, driveLink, name) => {
+exports.addLink = async(userId, rawLink, name) => {
     try{
         const gooLink = randomId(20)
+        const driveLink = rawLink.split("folders/")[1].split("?usp")[0]
         const links = await Link.create({userId, name, driveLink, gooLink})
     }catch (err){
         throw err
@@ -42,7 +43,14 @@ exports.toggleStatusLink = async(userId, linkId, status) => {
         throw err
     }
 }
-
+exports.getGooLink = async(rawLink) => {
+    try{
+        const goolink = await Link.findOneAndUpdate({gooLink: rawLink, status: "active"}, { $inc: { viewer: 1 } }, { returnDocument: "after" })
+        return goolink.driveLink
+    }catch(err){
+        throw err
+    }
+}
 
 
 function randomId(length = 20) {
