@@ -3,22 +3,34 @@ const driveRouter = express.Router()
 const Controller = require('./drive.controller')
 const Middleware = require('../../middlewares/auth.middleware')
 
-driveRouter.get('/test', Controller.testServer)
-driveRouter.get('/listImg/:id', Controller.getList)
+driveRouter.route('/health')
+    .get(Controller.testServer)
 
-driveRouter.get('/dashboard', Middleware.getPage, Controller.dashboard)
-driveRouter.get('/link', Middleware.getPage, Controller.link)
-driveRouter.get('/api', Middleware.getPage, Controller.api)
-driveRouter.get('/support', Middleware.getPage, Controller.support)
-driveRouter.get('/upgrade', Middleware.getPage, Controller.upgrade)
+driveRouter.route('/dashboard')
+    .get(Middleware.getPage, Controller.dashboard)
 
-driveRouter.post('/link', Middleware.getPage, Controller.addLink)
-driveRouter.delete('/link', Middleware.getPage, Controller.deleteLink)
-driveRouter.put('/link', Middleware.getPage, Controller.updateLink)
-driveRouter.patch('/link', Middleware.getPage, Controller.toggleStatusLink)
+driveRouter.route('/api')
+    .get(Middleware.getPage, Controller.api)
 
-driveRouter.get("/:goolink", Controller.getList)
-driveRouter.post("/:goolink", Controller.selectedImage)
-driveRouter.get("/:goolink/selected", Middleware.refresh, Controller.getSelectedImage)
+driveRouter.route('/support')
+    .get(Middleware.getPage, Controller.support)
+
+driveRouter.route('/upgrade')
+    .get(Middleware.getPage, Controller.upgrade)
+
+driveRouter.route('/link')
+    .get(Middleware.getPage, Controller.link)
+    .post(Middleware.getPage, Controller.addLink)
+    .put(Middleware.getPage, Controller.updateLink)
+    .delete(Middleware.getPage, Controller.deleteLink)
+    .patch(Middleware.getPage, Controller.toggleStatusLink)
+
+driveRouter.route('/link/:goolink/images')
+    .get(Controller.getList)
+
+driveRouter.route('/link/:goolink/selected-images')
+    .get(Middleware.refresh, Controller.getSelectedImage)
+    .post(Controller.selectedImage)
+    .delete(Middleware.refresh, Controller.clearSelectedImage)
 
 module.exports = driveRouter

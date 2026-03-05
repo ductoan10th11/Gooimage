@@ -13,13 +13,14 @@ const limiter = rateLimit({
 
 // app.set("trust proxy", true);
 app.use(cors({
-  origin: "http://localhost:3618",
+  origin: process.env.CORS_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true
 }))
+
 app.use(cookieParser())
 app.use(express.json())
-// app.use(limiter);
+app.use(limiter);
 
 const driveRouter = require('./modules/drive-api/drive.route')
 app.use('/drive', driveRouter)

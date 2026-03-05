@@ -80,6 +80,17 @@ exports.getSelectedImage = async(gooLink, userId) => {
         throw err
     }
 }
+exports.clearSelectedImage = async(gooLink, userId) => {
+    try{
+        const goolink = await Link.findOne({userId, gooLink})
+        const linkId = goolink._id
+        const isExist = await Selected.deleteOne({linkId})
+        if(isExist === null) return null
+        return [gooLink, isExist.selected]
+    }catch(err){
+        throw err
+    }
+}
 
 
 

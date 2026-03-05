@@ -1,52 +1,42 @@
-[{
-  "_id": {
-    "$oid": "69a3e515676fb4b1743f3087"
+db.permissions.insertMany([
+{
+  _id: ObjectId("69a3e515676fb4b1743f3087"),
+  name: "user",
+  permission: {
+    LOGIN: true,
+    GET_LINK: true,
+    CREATE_LINK: true,
+    REMOVE_LINK: true,
+    UPDATE_LINK: true,
+    DASHBOARD: true,
+    LINK: true,
+    API: true,
+    DOCUMENT: true,
+    UPGRADE: true,
+    SUPPORT: true
   },
-  "name": "user",
-  "permission": {
-    "LOGIN": true,
-    "GET_LINK": true,
-    "CREATE_LINK": true,
-    "REMOVE_LINK": true,
-    "UPDATE_LINK": true,
-    "DASHBOARD": true,
-    "LINK": true,
-    "API": true,
-    "DOCUMENT": true,
-    "UPDATE": true,
-    "SUPPORT": true
-  },
-  "createdAt": {
-    "$date": "2026-03-01T07:04:53.835Z"
-  },
-  "updatedAt": {
-    "$date": "2026-03-01T07:04:53.835Z"
-  },
-  "__v": 0
+  createdAt: ISODate("2026-03-01T07:04:53.835Z"),
+  updatedAt: ISODate("2026-03-01T07:04:53.835Z"),
+  __v: 0
 },
 {
-  "_id": {
-    "$oid": "69a3e52789e87f2e7e9014c2"
+  _id: ObjectId("69a3e52789e87f2e7e9014c2"),
+  name: "admin",
+  permission: {
+    LOGIN: true,
+    GET_LINK: true,
+    CREATE_LINK: true,
+    REMOVE_LINK: true,
+    UPDATE_LINK: true,
+    DASHBOARD: true,
+    LINK: true,
+    API: true,
+    DOCUMENT: true,
+    UPGRADE: true,
+    SUPPORT: true
   },
-  "name": "admin",
-  "permission": {
-    "LOGIN": true,
-    "GET_LINK": true,
-    "CREATE_LINK": true,
-    "REMOVE_LINK": true,
-    "UPDATE_LINK": true,
-    "DASHBOARD": true,
-    "LINK": true,
-    "API": true,
-    "DOCUMENT": true,
-    "UPDATE": true,
-    "SUPPORT": true
-  },
-  "createdAt": {
-    "$date": "2026-03-01T07:05:11.036Z"
-  },
-  "updatedAt": {
-    "$date": "2026-03-01T07:05:11.036Z"
-  },
-  "__v": 0
-}]
+  createdAt: ISODate("2026-03-01T07:05:11.036Z"),
+  updatedAt: ISODate("2026-03-01T07:05:11.036Z"),
+  __v: 0
+}
+])

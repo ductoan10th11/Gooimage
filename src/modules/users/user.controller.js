@@ -1,6 +1,7 @@
 const Service = require('./user.service')
 const MSG = require('../../utils/message')
 const Role = require('../roles/role.service')
+const Tracking = require('../Logs/tracking')
 
 exports.auth = async(req, res) => {
     try{

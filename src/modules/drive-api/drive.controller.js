@@ -160,7 +160,18 @@ exports.getSelectedImage = async(req, res) => {
         return res.status(500).json({message: "Server Error"})
     }
 }
-
+exports.clearSelectedImage = async(req, res) => {
+    try{
+        const gooLink = req.params.goolink
+        const userId = req.user._id
+        const sel = await Link.clearSelectedImage(gooLink, userId)
+        if(!sel) return res.json(MSG.msg.notExist)
+        return res.json({...MSG.msg.success})
+    }catch (err){
+        await Tracking.writeError(req, err)
+        return res.status(500).json({message: "Server Error"})
+    }
+}
 
 exports.testServer = async (req, res) => {
     try{ 
